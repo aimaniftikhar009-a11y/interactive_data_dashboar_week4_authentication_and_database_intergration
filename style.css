@@ -1,0 +1,18 @@
+*{box-sizing:border-box; font-family:Inter, sans-serif}
+body{margin:0; background:#f8fafc; color:#111}
+.auth-body{display:flex; justify-content:center; align-items:center; height:100vh; background:#f1f5f9}
+.card{background:white; padding:28px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.06); margin:12px}
+.badge{background:#dcfce7; color:#166534; padding:4px 10px; border-radius:20px; font-size:12px; display:inline-block; margin-bottom:10px}
+.sub{color:#64748b; font-size:14px; margin-top:-10px}
+input{width:100%; padding:12px; margin:8px 0; border:1px solid #e2e8f0; border-radius:10px; outline:none}
+input:focus{border-color:black}
+.btn-black{background:black; color:white; padding:12px; border:none; border-radius:10px; cursor:pointer; font-weight:600}
+.btn-light{background:#f1f5f9; color:black; padding:12px; border:none; border-radius:10px; cursor:pointer; font-weight:600; width:100%; margin-top:8px}
+.header{display:flex; justify-content:space-between; align-items:center; background:white; padding:16px 24px; border-bottom:1px solid #eee}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:20px}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
+.loader{width:30px; height:30px; border:3px solid #eee; border-top:3px solid black; border-radius:50%; animation:spin 1s linear infinite; margin:10px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.item{background:#f8fafc; padding:12px; border-radius:10px; margin:8px 0; display:flex; justify-content:space-between; align-items:center}
+#toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#111; color:white; padding:12px 20px; border-radius:30px; display:none; z-index:99}
+.show{display:block !important}

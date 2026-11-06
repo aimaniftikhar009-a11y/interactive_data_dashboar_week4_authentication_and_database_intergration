@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Production</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="header">
+  <div><h2 id="welcome">Dashboard</h2><small id="userEmail"></small></div>
+  <button onclick="logout()" class="btn-black">Log Out</button>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Live Market Data (Public API)</h3>
+    <div id="apiLoader" class="loader"></div>
+    <div id="apiData"></div>
+    <button onclick="fetchAPI()" class="btn-light">Refresh Data</button>
+  </div>
+
+  <div class="card">
+    <h3>Save to My Profile (CRUD)</h3>
+    <input id="metric" placeholder="e.g., My Fav Coin: Bitcoin">
+    <button onclick="saveData()" class="btn-black" style="width:100%; margin-top:8px">Save to Database</button>
+    <div id="list"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+// Only for dashboard page
+if(!localStorage.getItem("sessionUser")) location.href="index.html";
+document.getElementById("userEmail").innerText = localStorage.getItem("sessionUser");
+document.getElementById("welcome").innerText = "Welcome, " + localStorage.getItem("sessionUser").split("@")[0];
+fetchAPI(); loadData();
+</script>
+</body>
+</html>

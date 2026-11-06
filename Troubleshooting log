@@ -1,0 +1,4 @@
+Week 4 Errors Solved:
+1. Build Failure on Vercel: Initially Firebase keys were missing. Solved by using LocalStorage DB, no env needed.
+2. White Screen on Refresh: Solved by onAuthStateChanged check via localStorage session.
+3. API Loading stuck: Added try/catch and loader hide in both success and error.
