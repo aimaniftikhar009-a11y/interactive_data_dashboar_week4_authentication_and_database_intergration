@@ -1,101 +1,21 @@
-function showToast(msg){
-  let t=document.getElementById("toast");
-  t.innerText=msg; t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),3000);
-}
-
-// --- AUTH LOGIC FOR index.html ---
-const loginBtn = document.getElementById("loginBtn");
-if(loginBtn){
-  if(localStorage.getItem("sessionUser")) location.href="dashboard.html";
-  
-  loginBtn.onclick = () => {
-    let e = document.getElementById("email").value.trim();
-    let p = document.getElementById("password").value.trim();
-    // Edge Case: Empty form
-    if(!e || !p){ showToast("❌ Email and Password required"); return; }
-    if(p.length < 4){ showToast("❌ Password must be 4+ characters"); return; }
-    
-    let users = JSON.parse(localStorage.getItem("users") || "{}");
-    if(users[e] && users[e]===p){
-      localStorage.setItem("sessionUser", e);
-      showToast("✅ Login Successful");
-      setTimeout(()=>location.href="dashboard.html",800);
-    } else {
-      showToast("❌ Wrong email or password");
-    }
-  };
-  
-  document.getElementById("signupBtn").onclick = () => {
-    let e = document.getElementById("email").value.trim();
-    let p = document.getElementById("password").value.trim();
-    if(!e || !p){ showToast("❌ Fill all fields"); return; }
-    let users = JSON.parse(localStorage.getItem("users") || "{}");
-    if(users[e]){ showToast("⚠️ Account already exists"); return; }
-    users[e]=p; localStorage.setItem("users", JSON.stringify(users));
-    showToast("✅ Account created! Now Login");
-  };
-}
-
-// --- DASHBOARD LOGIC ---
-function getKey(){ return "data_" + localStorage.getItem("sessionUser"); }
-
-function logout(){
-  localStorage.removeItem("sessionUser");
-  location.href="index.html";
-}
-
-async function fetchAPI(){
-  let loader = document.getElementById("apiLoader");
-  let box = document.getElementById("apiData");
-  if(!loader) return;
-  loader.style.display="block"; box.innerHTML="";
-  try{
-    // Public API - CoinGecko (No key needed)
-    let res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=3&page=1");
-    let data = await res.json();
-    loader.style.display="none";
-    box.innerHTML = data.map(c=>`<div class="item"><b>${c.name} (${c.symbol.toUpperCase()})</b><span>$${c.current_price}</span></div>`).join("");
-  }catch(err){
-    loader.style.display="none";
-    box.innerHTML="<p>Failed to load API. Check internet.</p>";
-  }
-}
-
-function saveData(){
-  let input = document.getElementById("metric");
-  if(!input.value.trim()){ showToast("❌ Cannot save empty value"); return; }
-  let all = JSON.parse(localStorage.getItem(getKey()) || "[]");
-  all.push({id:Date.now(), text:input.value.trim()});
-  localStorage.setItem(getKey(), JSON.stringify(all));
-  input.value=""; loadData(); showToast("✅ Saved to your profile");
-}
-
-function loadData(){
-  let list = document.getElementById("list");
-  if(!list) return;
-  let all = JSON.parse(localStorage.getItem(getKey()) || "[]");
-  list.innerHTML = all.length===0 ? "<p style='color:#999'>No saved data yet</p>" : "";
-  all.forEach(item=>{
-    let div=document.createElement("div"); div.className="item";
-    div.innerHTML=`<span>${item.text}</span><span><button onclick="editData(${item.id})">Edit</button> <button onclick="deleteData(${item.id})" style="background:#fee">Delete</button></span>`;
-    list.appendChild(div);
-  });
-}
-
-function deleteData(id){
-  let all = JSON.parse(localStorage.getItem(getKey()) || "[]");
-  all = all.filter(x=>x.id!==id);
-  localStorage.setItem(getKey(), JSON.stringify(all));
-  loadData(); showToast("🗑️ Deleted successfully");
-}
-function editData(id){
-  let all = JSON.parse(localStorage.getItem(getKey()) || "[]");
-  let item = all.find(x=>x.id===id);
-  let newText = prompt("Edit your data:", item.text);
-  if(newText && newText.trim()){
-    item.text=newText.trim();
-    localStorage.setItem(getKey(), JSON.stringify(all));
-    loadData(); showToast("✏️ Updated successfully");
-  }
-}
+function showToast(msg){let t=document.getElementById("toast");t.innerText=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3000);}
+function applyTheme(){let theme=localStorage.getItem("theme")||"light";if(theme==="dark")document.body.classList.add("dark");else document.body.classList.remove("dark");let btn=document.getElementById("darkBtn");if(btn)btn.innerText=theme==="dark"?"☀️ Light Mode":"🌙 Dark Mode";}
+function toggleDarkMode(){let cur=localStorage.getItem("theme")||"light";localStorage.setItem("theme",cur==="dark"?"light":"dark");applyTheme();showToast("🎨 Theme Updated");}
+applyTheme();
+const loginBtn=document.getElementById("loginBtn");
+if(loginBtn){if(localStorage.getItem("sessionUser"))location.href="dashboard.html";
+loginBtn.onclick=()=>{let e=document.getElementById("email").value.trim();let p=document.getElementById("password").value.trim();if(!e||!p){showToast("❌ Email and Password required");return;}if(p.length<4){showToast("❌ Password must be 4+ characters");return;}let users=JSON.parse(localStorage.getItem("users")||"{}");if(users[e]&&users[e]===p){localStorage.setItem("sessionUser",e);showToast("✅ Login Successful");setTimeout(()=>location.href="dashboard.html",800);}else{showToast("❌ Wrong email or password");}};
+document.getElementById("signupBtn").onclick=()=>{let e=document.getElementById("email").value.trim();let p=document.getElementById("password").value.trim();if(!e||!p){showToast("❌ Fill all fields");return;}let users=JSON.parse(localStorage.getItem("users")||"{}");if(users[e]){showToast("⚠️ Account already exists");return;}users[e]=p;localStorage.setItem("users",JSON.stringify(users));showToast("✅ Account created! Now Login");};}
+function getKey(){return "data_"+localStorage.getItem("sessionUser");}
+function logout(){localStorage.removeItem("sessionUser");location.href="index.html";}
+async function fetchAPI(){let loader=document.getElementById("apiLoader");let box=document.getElementById("apiData");if(!loader)return;loader.style.display="block";box.innerHTML="";try{let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=3&page=1");let data=await res.json();loader.style.display="none";box.innerHTML=data.map(c=>`<div class="item"><b>${c.name}</b><span>$${c.current_price}</span></div>`).join("");}catch(err){loader.style.display="none";box.innerHTML="<p>Failed to load API.</p>";}}
+let currentPage=1;const LIMIT=5;let currentSearch="";
+function getPaginatedData(){let all=JSON.parse(localStorage.getItem(getKey())||"[]");if(currentSearch){let q=currentSearch.toLowerCase();all=all.filter(item=>item.text.toLowerCase().includes(q));}let totalPages=Math.max(1,Math.ceil(all.length/LIMIT));if(currentPage>totalPages)currentPage=totalPages;let start=(currentPage-1)*LIMIT;let paged=all.slice(start,start+LIMIT);return{paged,totalPages,total:all.length};}
+function onSearch(val){currentSearch=val.trim();currentPage=1;loadData();}
+function changePage(dir){let{totalPages}=getPaginatedData();let newPage=currentPage+dir;if(newPage<1||newPage>totalPages)return;currentPage=newPage;loadData();}
+function saveData(){let input=document.getElementById("metric");if(!input.value.trim()){showToast("❌ Cannot save empty value");return;}let all=JSON.parse(localStorage.getItem(getKey())||"[]");all.unshift({id:Date.now(),text:input.value.trim()});localStorage.setItem(getKey(),JSON.stringify(all));input.value="";currentPage=1;loadData();showToast("✅ Saved");}
+function loadData(){let list=document.getElementById("list");if(!list)return;let{paged,totalPages,total}=getPaginatedData();list.innerHTML=paged.length===0?"<p>No data found.</p>":"";paged.forEach(item=>{let div=document.createElement("div");div.className="item";div.innerHTML=`<span>${item.text}</span><span><button onclick="editData(${item.id})">Edit</button> <button onclick="deleteData(${item.id})">Delete</button></span>`;list.appendChild(div);});document.getElementById("pageInfo").innerText=`Page ${currentPage} of ${totalPages} (${total} items)`;document.getElementById("prevBtn").disabled=currentPage===1;document.getElementById("nextBtn").disabled=currentPage>=totalPages;}
+function deleteData(id){let all=JSON.parse(localStorage.getItem(getKey())||"[]");all=all.filter(x=>x.id!==id);localStorage.setItem(getKey(),JSON.stringify(all));loadData();showToast("🗑️ Deleted");}
+function editData(id){let all=JSON.parse(localStorage.getItem(getKey())||"[]");let item=all.find(x=>x.id===id);let newText=prompt("Edit:",item.text);if(newText&&newText.trim()){item.text=newText.trim();localStorage.setItem(getKey(),JSON.stringify(all));loadData();showToast("✏️ Updated");}}
+function updateProfile(){let name=document.getElementById("displayName").value.trim();if(!name){showToast("❌ Name cannot be empty");return;}localStorage.setItem("displayName_"+localStorage.getItem("sessionUser"),name);document.getElementById("welcome").innerText="Welcome, "+name;showToast("✅ Profile Updated");}
+function changePassword(){let oldP=document.getElementById("oldPass").value.trim();let newP=document.getElementById("newPass").value.trim();if(!oldP||!newP){showToast("❌ Fill both fields");return;}if(newP.length<4){showToast("❌ New password must be 4+ chars");return;}let email=localStorage.getItem("sessionUser");let users=JSON.parse(localStorage.getItem("users")||"{}");if(users[email]!==oldP){showToast("❌ Old password is wrong");return;}if(oldP===newP){showToast("⚠️ New password must be different");return;}users[email]=newP;localStorage.setItem("users",JSON.stringify(users));document.getElementById("oldPass").value="";document.getElementById("newPass").value="";showToast("✅ Password Changed");}

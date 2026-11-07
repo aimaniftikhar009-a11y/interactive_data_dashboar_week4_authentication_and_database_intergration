@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Production</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Week 5</title><link rel="stylesheet" href="style.css"></head>
 <body>
 <div class="header">
-  <div><h2 id="welcome">Dashboard</h2><small id="userEmail"></small></div>
-  <button onclick="logout()" class="btn-black">Log Out</button>
-</div>
-
+<div><h2 id="welcome">Dashboard</h2><small id="userEmail"></small></div>
+<div style="display:flex; gap:8px">
+<button onclick="toggleDarkMode()" id="darkBtn" class="btn-light" style="width:auto; margin:0">🌙 Dark Mode</button>
+<button onclick="logout()" class="btn-black">Log Out</button>
+</div></div>
 <div class="grid">
-  <div class="card">
-    <h3>Live Market Data (Public API)</h3>
-    <div id="apiLoader" class="loader"></div>
-    <div id="apiData"></div>
-    <button onclick="fetchAPI()" class="btn-light">Refresh Data</button>
-  </div>
-
-  <div class="card">
-    <h3>Save to My Profile (CRUD)</h3>
-    <input id="metric" placeholder="e.g., My Fav Coin: Bitcoin">
-    <button onclick="saveData()" class="btn-black" style="width:100%; margin-top:8px">Save to Database</button>
-    <div id="list"></div>
-  </div>
-</div>
-
-<div id="toast"></div>
-<script src="app.js"></script>
+<div class="card"><h3>Live Market Data</h3><div id="apiLoader" class="loader"></div><div id="apiData"></div><button onclick="fetchAPI()" class="btn-light">Refresh Data</button></div>
+<div class="card"><h3>My Saved Data - Pagination & Search</h3>
+<input id="searchInput" placeholder="🔍 Search your data..." oninput="onSearch(this.value)">
+<input id="metric" placeholder="e.g., My Fav Coin: Bitcoin">
+<button onclick="saveData()" class="btn-black" style="width:100%; margin-top:8px">Save to Database</button>
+<div id="list"></div>
+<div class="pagination"><button id="prevBtn" onclick="changePage(-1)">← Previous</button><span id="pageInfo">Page 1 of 1</span><button id="nextBtn" onclick="changePage(1)">Next →</button></div>
+<small>Showing 5 items per page</small></div></div>
+<div class="grid">
+<div class="card"><h3>⚙️ Profile Settings</h3>
+<label>Display Name</label><input id="displayName" placeholder="Your Name">
+<label>Email</label><input id="profileEmail" disabled style="opacity:0.6">
+<button onclick="updateProfile()" class="btn-black" style="width:100%">Update Profile</button><hr style="margin:16px 0">
+<h4>Change Password</h4><input id="oldPass" type="password" placeholder="Old Password"><input id="newPass" type="password" placeholder="New Password">
+<button onclick="changePassword()" class="btn-light">Change Password</button></div>
+<div class="card"><h3>📊 Week 5 Info</h3><p>✅ Pagination - 5 items per page</p><p>✅ Backend Search</p><p>✅ Dark Mode saved</p><p>✅ Profile Update</p></div></div>
+<div id="toast"></div><script src="app.js"></script>
 <script>
-// Only for dashboard page
 if(!localStorage.getItem("sessionUser")) location.href="index.html";
 document.getElementById("userEmail").innerText = localStorage.getItem("sessionUser");
-document.getElementById("welcome").innerText = "Welcome, " + localStorage.getItem("sessionUser").split("@")[0];
+let savedName = localStorage.getItem("displayName_"+localStorage.getItem("sessionUser")) || localStorage.getItem("sessionUser").split("@")[0];
+document.getElementById("welcome").innerText = "Welcome, " + savedName;
+document.getElementById("displayName").value = savedName;
+document.getElementById("profileEmail").value = localStorage.getItem("sessionUser");
 fetchAPI(); loadData();
-</script>
-</body>
-</html>
+</script></body></html>
